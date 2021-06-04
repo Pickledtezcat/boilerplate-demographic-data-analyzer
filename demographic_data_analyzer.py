@@ -3,13 +3,19 @@ import pandas as pd
 
 def calculate_demographic_data(print_data=True):
     # Read data from file
-    df = None
+    df = pd.read_csv("adult.data.csv") 
 
     # How many of each race are represented in this dataset? This should be a Pandas series with race names as the index labels.
-    race_count = None
+
+    #print(df["sex"].head())
+
+    race_count = df["race"].value_counts()
 
     # What is the average age of men?
-    average_age_men = None
+
+    men_mask = df["sex"] == "Male" 
+    average_age_men = df[men_mask].mean()
+    print(average_age_men)
 
     # What is the percentage of people who have a Bachelor's degree?
     percentage_bachelors = None
@@ -41,6 +47,7 @@ def calculate_demographic_data(print_data=True):
     top_IN_occupation = None
 
     # DO NOT MODIFY BELOW THIS LINE
+    return None
 
     if print_data:
         print("Number of each race:\n", race_count) 
