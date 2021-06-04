@@ -55,7 +55,8 @@ def calculate_demographic_data(print_data=True):
     rich_min_worker_mask = (df["hours-per-week"] == 1) & (df["salary"] == ">50K")
     rich_percentage = round(df[rich_min_worker_mask].shape[0] / df[df["hours-per-week"] == 1].shape[0] * 100.0)
 
-    print (rich_percentage)
+    countries = df["native-country"].value_counts()
+    print (countries.index.to_list())
 
     # What country has the highest percentage of people that earn >50K?
     highest_earning_country = None
