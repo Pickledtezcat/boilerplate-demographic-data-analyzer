@@ -1,5 +1,14 @@
 import pandas as pd
 
+def get_percentage(df, country_key):
+  total_mask = df["native-country"] == country_key
+  sal_mask = df["salary"] == ">50K"
+
+  total = df[total_mask].shape[0]
+  sal = df[sal_mask & total_mask].shape[0]
+
+  percent = round((sal / total) * 100.0, 1)
+  return [country_key, percent]
 
 def calculate_demographic_data(print_data=True):
     # Read data from file
@@ -8,9 +17,9 @@ def calculate_demographic_data(print_data=True):
     people = df.shape[0]
 
     # How many of each race are represented in this dataset? This should be a Pandas series with race names as the index labels.
-
-    print(df.columns)
-    print(df["salary"].tail())
+    
+    # show all the types of data for info
+    #print(df.columns)
 
     race_count = df["race"].value_counts()
 
@@ -56,18 +65,27 @@ def calculate_demographic_data(print_data=True):
     rich_percentage = round(df[rich_min_worker_mask].shape[0] / df[df["hours-per-week"] == 1].shape[0] * 100.0)
 
     countries = df["native-country"].value_counts()
-    print (countries.index.to_list())
+    country_keys = countries.index.to_list()
 
+    country_percentages = []
+    for country_key in country_keys:
+      per_country = get_percentage(df, country_key)
+      country_percentages.append(per_country)
+
+    sorted_countries = sorted(country_percentages, key=lambda country: country[1], reverse=True)
+    
     # What country has the highest percentage of people that earn >50K?
-    highest_earning_country = None
-    highest_earning_country_percentage = None
+    highest_earning_country = sorted_countries[0][0]
+    highest_earning_country_percentage = sorted_countries[0][1]
 
     # Identify the most popular occupation for those who earn >50K in India.
-    top_IN_occupation = None
+    india_mask = df["native-country"] == "India"
+    india_high_earners = df[sal_mask & india_mask]
+
+    top_IN_occupation = (india_high_earners["occupation"].mode()).to_list()[0]
 
     # DO NOT MODIFY BELOW THIS LINE
-    return None
-
+    
     if print_data:
         print("Number of each race:\n", race_count) 
         print("Average age of men:", average_age_men)
